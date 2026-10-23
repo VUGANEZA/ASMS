@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ t.review }} APP-{{ application.id }} — ASMS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card p-4 p-md-5 shadow-lg border-0">
+            
+            <!-- HEADER -->
+            <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-4">
+                <div>
+                    <h2 style="color: #1b5e5a; font-weight: 700;">APP-{{ application.id }}</h2>
+                    <p class="text-muted mb-0">{{ t.applicant }}: <strong>{{ application.applicant.username }}</strong></p>
+                </div>
+                
+                <!-- STATUS BADGE AND DOWNLOAD BUTTONS -->
+                <div class="d-flex align-items-center gap-2">
+                    {% if application.status == 'approved' %}
+                        <span class="badge bg-success fs-6 me-2">{{ application.get_status_display }}</span>
+                    {% elif application.status == 'rejected' %}
+                        <span class="badge bg-danger fs-6 me-2">{{ application.get_status_display }}</span>
+                    {% else %}
+                        <span class="badge bg-secondary fs-6 me-2">{{ application.get_status_display }}</span>
+                    {% endif %}
+
+                    {% if user.role == 'rema_officer' or user.role == 'rema_admin' %}
+                        <!-- Translatable Download Buttons -->
+                        <a href="{% url 'application_download_pdf' application.id %}?lang={{ current_lang }}" class="btn btn-danger fw-bold btn-sm">
+                            {{ t.download_pdf }}
+                        </a>
+                        <a href="{% url 'application_download_csv' application.id %}?lang={{ current_lang }}" class="btn btn-success fw-bold btn-sm">
+                            {{ t.download_csv }}
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- MOTORCYCLE DETAILS -->
+            <h5 class="mt-4 mb-3 fw-bold" style="color: #1b5e5a;">{{ t.motorcycle_details }}</h5>
+            <table class="table table-bordered bg-white">
+                <tr><th class="bg-light w-25">{{ t.brand }}</th><td>{{ application.motorcycle.brand }}</td></tr>
+                <tr><th class="bg-light">{{ t.model }}</th><td>{{ application.motorcycle.model }}</td></tr>
+                <tr><th class="bg-light">{{ t.year }}</th><td>{{ application.motorcycle.year }}</td></tr>
+                <tr><th class="bg-light">{{ t.engine_cc }}</th><td>{{ application.motorcycle.engine_capacity_cc }} cc</td></tr>
+                <tr><th class="bg-light">{{ t.chassis }}</th><td>{{ application.motorcycle.chassis_number }}</td></tr>
+                <tr><th class="bg-light">{{ t.emission }}</th><td>{{ application.motorcycle.emission_standard|default:"—" }}</td></tr>
+            </table>
+
+            <!-- APPLICATION DETAILS -->
+            <h5 class="mt-4 mb-3 fw-bold" style="color: #1b5e5a;">{{ t.app_details }}</h5>
+            <table class="table table-bordered bg-white">
+                <tr><th class="bg-light w-25">{{ t.intended_use }}</th><td>{{ application.get_intended_use_display }}</td></tr>
+                <tr><th class="bg-light">{{ t.engine_type }}</th><td>{{ application.get_engine_type_display }}</td></tr>
+                {% if application.on_behalf_of_name %}
+                    <tr><th class="bg-light">{{ t.behalf }}</th><td>{{ application.on_behalf_of_name }}</td></tr>
+                {% endif %}
+            </table>
+
+            <!-- ADMIN ONLY DECISION PANEL -->
+            {% if user.role == 'rema_officer' or user.role == 'rema_admin' %}
+                {% if application.status == 'submitted' or application.status == 'info_requested' %}
+                    <hr class="my-4">
+                    <h5 class="fw-bold" style="color: #1b5e5a;">{{ t.official_notes }}</h5>
+                    <form method="post">
+                        {% csrf_token %}
+                        <textarea name="reason" class="form-control mb-3" rows="3" required placeholder="{{ t.official_notes }}..."></textarea>
+                        <div class="d-flex gap-2">
+                            <button type="submit" name="action" value="approve" class="btn btn-success px-4">{{ t.approve }}</button>
+                            <button type="submit" name="action" value="reject" class="btn btn-danger px-4">{{ t.reject }}</button>
+                            <button type="submit" name="action" value="request_info" class="btn btn-warning px-4">{{ t.req_info }}</button>
+                        </div>
+                    </form>
+                {% elif application.status == 'approved' or application.status == 'rejected' %}
+                    <div class="alert alert-info mt-4">
+                        <strong>Decision Finalized:</strong> This application was already {{ application.get_status_display|lower }} on {{ application.decision_at|date:"Y-m-d H:i" }}.
+                    </div>
+                {% endif %}
+            {% endif %}
+
+            <!-- APPLICANT ACTIONS -->
+            <div class="d-flex gap-2 mt-4 pt-4 border-top">
+                <a href="{% if user.role == 'rema_officer' or user.role == 'rema_admin' %}{% url 'officer_dashboard' %}{% else %}{% url 'dashboard' %}{% endif %}?lang={{ current_lang }}" class="btn btn-outline-secondary">← {{ t.back_dashboard }}</a>
+                
+                {% if application.status == 'submitted' or application.status == 'info_requested' %}
+                    <a href="{% url 'application_edit' application.id %}?lang={{ current_lang }}" class="btn btn-warning text-dark">{{ t.edit_app }}</a>
+                    <form method="post" action="{% url 'application_delete' application.id %}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this application?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">{{ t.delete }}</button>
+                    </form>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

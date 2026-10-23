@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ t.welcome }}{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    
+    <!-- Card 1: Applicant Portal -->
+    <div class="col-md-4">
+        <div class="rema-card">
+            <div class="rema-card-icon">
+                <i class="fa-solid fa-motorcycle"></i>
+            </div>
+            <h3 class="rema-card-title">{{ t.applicant_portal }}</h3>
+            <p class="rema-card-text">
+                {{ t.applicant_desc }}
+            </p>
+            {% if user.is_authenticated and user.role not in 'rema_officer,rema_admin' %}
+                <a href="{% url 'dashboard' %}?lang={{ current_lang }}" class="rema-card-link">
+                    {{ t.my_dashboard }} &rarr;
+                </a>
+            {% else %}
+                <a href="{% url 'login' %}?lang={{ current_lang }}" class="rema-card-link">
+                    {{ t.applicant_login }} &rarr;
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Card 2: REMA ASMS Office -->
+    <div class="col-md-4">
+        <div class="rema-card">
+            <div class="rema-card-icon">
+                <i class="fa-solid fa-building-shield"></i>
+            </div>
+            <h3 class="rema-card-title">{{ t.rema_office }}</h3>
+            <p class="rema-card-text">
+                {{ t.rema_desc }}
+            </p>
+            {% if user.is_authenticated and user.role in 'rema_officer,rema_admin' %}
+                <a href="{% url 'officer_dashboard' %}?lang={{ current_lang }}" class="rema-card-link">
+                    {{ t.officer_dashboard }} &rarr;
+                </a>
+            {% else %}
+                <a href="{% url 'officer_login' %}?lang={{ current_lang }}" class="rema-card-link">
+                    {{ t.admin_login }} &rarr;
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Card 3: About ASMS / Policy -->
+    <div class="col-md-4">
+        <div class="rema-card">
+            <div class="rema-card-icon">
+                <i class="fa-solid fa-file-shield"></i>
+            </div>
+            <h3 class="rema-card-title">{{ t.about }}</h3>
+            <p class="rema-card-text">
+                Learn about the REMA policies for importing second-hand motorcycles, including sports and disability rules.
+            </p>
+            <a href="{% url 'about' %}?lang={{ current_lang }}" class="rema-card-link">
+                Read more &rarr;
+            </a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

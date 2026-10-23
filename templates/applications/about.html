@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ t.about }} — ASMS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-md-10">
+        
+        <div class="card p-5 shadow-sm border-0">
+            <div class="text-center mb-5">
+                <h1 class="fw-bold" style="color: #1b5e5a;">{{ t.about }}</h1>
+                <p class="lead text-muted">{{ t.about_subtitle }}</p>
+                <hr style="width: 100px; margin: 0 auto; border-top: 3px solid #ffc107;">
+            </div>
+
+            <h4 class="fw-bold mb-3" style="color: #333;">{{ t.what_is_asms }}</h4>
+            <p class="mb-4" style="font-size: 1.1rem; line-height: 1.8;">
+                {{ t.what_is_asms_text|safe }}
+            </p>
+
+            <h4 class="fw-bold mb-3 mt-5" style="color: #333;">{{ t.our_mission }}</h4>
+            <p class="mb-4" style="font-size: 1.1rem; line-height: 1.8;">
+                {{ t.our_mission_text }}
+            </p>
+
+            <h4 class="fw-bold mb-3 mt-5" style="color: #333;">{{ t.policy_guidelines }}</h4>
+            <div class="alert alert-warning border-warning mb-4">
+                {{ t.policy_warning|safe }}
+                <ul class="mt-2 mb-0">
+                    <li><strong>{{ t.sports_use }}</strong></li>
+                    <li><strong>{{ t.disability_use }}</strong></li>
+                </ul>
+                <em class="d-block mt-2">{{ t.auto_reject }}</em>
+            </div>
+
+            <div class="row mt-5 text-center">
+                <div class="col-md-4 mb-4">
+                    <div class="p-4 border rounded h-100 bg-light">
+                        <h5 class="fw-bold" style="color: #1b5e5a;">{{ t.fast_processing }}</h5>
+                        <p class="text-muted mb-0">{{ t.fast_processing_text }}</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="p-4 border rounded h-100 bg-light">
+                        <h5 class="fw-bold" style="color: #1b5e5a;">{{ t.transparent }}</h5>
+                        <p class="text-muted mb-0">{{ t.transparent_text }}</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="p-4 border rounded h-100 bg-light">
+                        <h5 class="fw-bold" style="color: #1b5e5a;">{{ t.secure }}</h5>
+                        <p class="text-muted mb-0">{{ t.secure_text }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="{% url 'home' %}?lang={{ current_lang }}" class="btn btn-asms px-4 py-2" style="font-size: 1.1rem;">← {{ t.back_home }}</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

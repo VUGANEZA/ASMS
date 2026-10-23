@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}{{ t.recycle_bin }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-4">
+    <h2 style="color: #dc3545;">{{ t.recycle_bin }}</h2>
+    <a href="{% url 'officer_dashboard' %}?lang={{ current_lang }}" class="btn btn-secondary">← {{ t.back_dashboard }}</a>
+</div>
+{% if applications %}
+    <table class="table bg-white shadow-sm rounded">
+        <thead><tr><th>#</th><th>{{ t.applicant }}</th><th>Action</th></tr></thead>
+        <tbody>
+            {% for app in applications %}
+                <tr>
+                    <td><strong>APP-{{ app.id }}</strong></td>
+                    <td>{{ app.applicant.username }}</td>
+                    <td><form method="post" action="{% url 'officer_restore_application' app.id %}" class="d-inline">{% csrf_token %}<button type="submit" class="btn btn-sm btn-success">{{ t.restore }}</button></form></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}<div class="alert alert-info">{{ t.no_applications }}</div>{% endif %}
+{% endblock %}

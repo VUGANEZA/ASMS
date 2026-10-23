@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if is_edit %}{{ t.edit_app }}{% else %}{{ t.new_application }}{% endif %} — ASMS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card p-4 p-md-5 shadow-lg border-0">
+            
+            <div class="text-center mb-5">
+                <h2 class="fw-bold" style="color: #1b5e5a;">
+                    {% if is_edit %}{{ t.edit_app }}{% else %}{{ t.new_application }}{% endif %}
+                </h2>
+            </div>
+
+            <form method="post" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}
+                            <div>{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- SECTION 1: Intended Use & Engine Type -->
+                <h5 class="mb-3 fw-bold border-bottom pb-2" style="color: #1b5e5a;">
+                    1. {{ t.intended_use }} & {{ t.engine_type }}
+                </h5>
+
+                <div class="mb-3">
+                    <label class="form-label">{{ t.intended_use }} <span class="text-danger">*</span></label>
+                    {{ form.intended_use }}
+                    {{ form.intended_use.errors }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">{{ t.engine_type }} <span class="text-danger">*</span></label>
+                    {{ form.engine_type }}
+                    {{ form.engine_type.errors }}
+                </div>
+
+                <!-- SECTION 2: Motorcycle Details -->
+                <h5 class="mb-3 mt-4 fw-bold border-bottom pb-2" style="color: #1b5e5a;">
+                    2. {{ t.motorcycle_details }}
+                </h5>
+
+                <div class="mb-3">
+                    <label class="form-label">{{ t.brand }} <span class="text-danger">*</span></label>
+                    {{ form.brand }}
+                    {{ form.brand.errors }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">{{ t.model }} <span class="text-danger">*</span></label>
+                    {{ form.model }}
+                    {{ form.model.errors }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">{{ t.year }} <span class="text-danger">*</span></label>
+                    {{ form.year }}
+                    {{ form.year.errors }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">{{ t.engine_cc }} <span class="text-danger">*</span></label>
+                    {{ form.engine_capacity_cc }}
+                    {{ form.engine_capacity_cc.errors }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">{{ t.chassis }} <span class="text-danger">*</span></label>
+                    {{ form.chassis_number }}
+                    {% if form.chassis_number.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ form.chassis_number.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">{{ t.emission }}</label>
+                    {{ form.emission_standard }}
+                    {{ form.emission_standard.errors }}
+                </div>
+
+                <!-- SECTION 3: Applying on Behalf -->
+                <h5 class="mb-3 mt-4 fw-bold border-bottom pb-2" style="color: #1b5e5a;">
+                    3. {{ t.behalf }}
+                </h5>
+
+                <div class="mb-3">
+                    <label class="form-label">{{ t.behalf }} (Name)</label>
+                    {{ form.on_behalf_of_name }}
+                    {{ form.on_behalf_of_name.errors }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">{{ t.behalf }} (ID)</label>
+                    {{ form.on_behalf_of_identity }}
+                    {{ form.on_behalf_of_identity.errors }}
+                </div>
+
+                <!-- SECTION 4: Documents -->
+                <h5 class="mb-3 mt-4 fw-bold border-bottom pb-2" style="color: #1b5e5a;">
+                    4. {{ t.tech_sheet }}
+                </h5>
+
+                <div class="mb-3">
+                    <label class="form-label">{{ t.tech_sheet }}</label>
+                    {{ form.tech_data_sheet }}
+                    {{ form.tech_data_sheet.errors }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">{{ t.prev_reg }}</label>
+                    {{ form.prev_registration }}
+                    {{ form.prev_registration.errors }}
+                </div>
+
+                <!-- ACTIONS -->
+                <div class="d-flex gap-3 mt-5 pt-4 border-top">
+                    <button type="submit" class="btn btn-asms px-5 py-2" style="background-color: #1b5e5a; color: white; font-weight: 600;">
+                        {{ t.submit }}
+                    </button>
+                    <a href="{% url 'dashboard' %}?lang={{ current_lang }}" class="btn btn-outline-secondary px-4 py-2">
+                        {{ t.cancel }}
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

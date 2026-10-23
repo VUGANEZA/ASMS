@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ t.officer_dashboard }}{% endblock %}
+
+{% block content %}
+
+<!-- === CUSTOM STYLES === -->
+<style>
+    .dashboard-title-fixed {
+        color: #ffffff !important;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.9);
+        font-weight: bold;
+    }
+
+    .btn-export-fixed {
+        background-color: #ffffff !important;
+        color: #1b5e5a !important;
+        border: 2px solid #ffffff !important;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    .btn-export-fixed:hover {
+        background-color: transparent !important;
+        color: #ffffff !important;
+    }
+
+    .table-container-fixed {
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+</style>
+
+<!-- Header Area -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="dashboard-title-fixed">{{ t.officer_dashboard }}</h2>
+    
+    <div>
+        <a href="{% url 'officer_recycle_bin' %}?lang={{ current_lang }}" class="btn btn-success me-2">{{ t.recycle_bin }}</a>
+        
+        <!-- CSV Button (Translated & passing language) -->
+        <a href="{% url 'officer_export_all_csv' %}?lang={{ current_lang }}" class="btn btn-export-fixed me-2">{{ t.export_csv }}</a>
+        
+        <!-- PDF Button (Translated & passing language) -->
+        <a href="{% url 'officer_export_all_pdf' %}?lang={{ current_lang }}" class="btn btn-danger fw-bold">{{ t.download_pdf }}</a>
+    </div>
+</div>
+
+<!-- Table Area -->
+<div class="table-container-fixed">
+    <table class="table table-hover mb-0">
+        <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>{{ t.applicant }}</th>
+                <th>{{ t.motorcycle_details }}</th>
+                <th>{{ t.status }}</th>
+                <th class="text-end">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in applications %}
+                <tr>
+                    <td>
+                        <strong>APP-{{ app.id }}</strong>
+                        <!-- SLA WARNING BADGES -->
+                        {% if app.is_overdue %}
+                            <span class="badge bg-danger ms-2">SLA Overdue!</span>
+                        {% elif app.is_approaching_deadline %}
+                            <span class="badge bg-warning text-dark ms-2">Deadline Approaching</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ app.applicant.username }}</td>
+                    <td>
+                        {% if app.motorcycle %}
+                            {{ app.motorcycle.brand }} {{ app.motorcycle.model }}
+                        {% else %}
+                            <span class="text-muted">—</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ app.get_status_display }}</td>
+                    <td class="text-end">
+                        <a href="{% url 'officer_application_view' app.id %}?lang={{ current_lang }}" class="btn btn-sm btn-outline-primary me-1">{{ t.review }}</a>
+                        
+                        <form method="post" action="{% url 'officer_delete_application' app.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger">{{ t.delete }}</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Verify Authorization — ASMS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8">
+        <div class="card p-5 shadow-lg border-0 text-center">
+            
+            {% if application %}
+                <!-- SUCCESSFUL VERIFICATION -->
+                <div class="mb-4">
+                    <i class="fa-solid fa-circle-check text-success" style="font-size: 4rem;"></i>
+                </div>
+                <h2 class="fw-bold mb-3" style="color: #1b5e5a;">Authentic Authorization</h2>
+                <p class="lead text-muted mb-4">This document is a valid REMA import authorization.</p>
+                
+                <div class="table-responsive text-start mt-4">
+                    <table class="table table-bordered">
+                        <tr><th class="bg-light w-50">Reference Number</th><td class="fw-bold">{{ application.reference_number }}</td></tr>
+                        <tr><th class="bg-light">Applicant</th><td>{{ application.applicant.username }}</td></tr>
+                        <tr><th class="bg-light">Motorcycle</th><td>{{ application.motorcycle.brand }} {{ application.motorcycle.model }} ({{ application.motorcycle.year }})</td></tr>
+                        <tr><th class="bg-light">Chassis Number</th><td>{{ application.motorcycle.chassis_number }}</td></tr>
+                        <tr><th class="bg-light">Status</th><td><span class="badge bg-success">{{ application.get_status_display }}</span></td></tr>
+                        <tr><th class="bg-light">Date Approved</th><td>{{ application.decision_at|date:"Y-m-d" }}</td></tr>
+                    </table>
+                </div>
+                
+            {% else %}
+                <!-- INVALID VERIFICATION -->
+                <div class="mb-4">
+                    <i class="fa-solid fa-circle-xmark text-danger" style="font-size: 4rem;"></i>
+                </div>
+                <h2 class="fw-bold mb-3" style="color: #dc3545;">Invalid Authorization</h2>
+                <p class="lead text-muted">The reference number <strong>{{ ref_number }}</strong> could not be found in the REMA database.</p>
+                <p class="text-muted">This document may be forged, or the application was not approved.</p>
+                
+            {% endif %}
+
+            <div class="mt-5">
+                <a href="{% url 'home' %}" class="btn btn-asms px-4 py-2" style="background-color: #1b5e5a; color: white;">Return to ASMS Home</a>
+            </div>
+            
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}{{ t.my_dashboard }}{% endblock %}
+{% block extra_css %}
+<style>
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid #e9ecef; }
+    .page-header h2 { color: #1b5e5a; font-weight: 600; margin: 0; }
+    .btn-new-app { background-color: #1b5e5a; color: white; font-weight: 600; padding: 0.6rem 1.2rem; border-radius: 6px; text-decoration: none; }
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .stat-card { background: white; border-radius: 8px; padding: 1rem 1.25rem; border-left: 4px solid #1b5e5a; }
+    .stat-value { font-size: 1.75rem; font-weight: 700; color: #1b5e5a; }
+    .applications-table { background: white; border-radius: 8px; overflow: hidden; }
+    .applications-table th { color: #1b5e5a; padding: 1rem; }
+    .applications-table td { padding: 1rem; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="page-header"><h2>{{ t.my_dashboard }}</h2><a href="{% url 'application_create' %}?lang={{ current_lang }}" class="btn-new-app">{{ t.new_application }}</a></div>
+<div class="stats-row"><div class="stat-card"><div class="stat-label">{{ t.total_apps }}</div><div class="stat-value">{{ total }}</div></div></div>
+{% if applications %}
+    <div class="applications-table">
+        <table class="table">
+            <thead><tr><th>#</th><th>{{ t.motorcycle_details }}</th><th>{{ t.status }}</th><th class="text-end">Action</th></tr></thead>
+            <tbody>
+                {% for app in applications %}
+                    <tr>
+                        <td><strong>APP-{{ app.id }}</strong></td>
+                        <td>{{ app.motorcycle.brand }} {{ app.motorcycle.model }}</td>
+                        <td><span class="badge bg-secondary">{{ app.get_status_display }}</span></td>
+                        <td class="text-end"><a href="{% url 'application_detail' app.id %}?lang={{ current_lang }}" class="btn btn-sm btn-outline-secondary">{{ t.view }}</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="alert alert-info">{{ t.no_apps_yet }} <a href="{% url 'application_create' %}?lang={{ current_lang }}">{{ t.start_first }}</a></div>
+{% endif %}
+{% endblock %}

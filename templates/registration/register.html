@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ t.register }} — ASMS{% endblock %}
+
+{% block extra_css %}
+<style>
+    .register-card { max-width: 900px; margin: 0 auto; }
+    .form-section { border-left: 4px solid #1b5e5a; padding-left: 1.25rem; margin-bottom: 2rem; }
+    .form-section h5 { color: #1b5e5a; font-weight: 600; margin-bottom: 1.25rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e9ecef; }
+    .field-group { margin-bottom: 1.25rem; }
+    .form-label { display: block; font-weight: 500; color: #333; margin-bottom: 0.4rem; }
+    .form-control, .form-select { display: block; width: 100%; height: 48px; font-size: 1rem; border-radius: 6px; padding: 0.6rem 0.9rem; border: 1px solid #ced4da; }
+    .form-control:focus, .form-select:focus { border-color: #1b5e5a; box-shadow: 0 0 0 0.2rem rgba(27, 94, 90, 0.15); }
+    .help-text { font-size: 0.85rem; color: #6c757d; margin-top: 0.3rem; }
+    .btn-register { background-color: #1b5e5a; color: white; height: 52px; font-size: 1.05rem; font-weight: 600; border-radius: 6px; }
+    .btn-register:hover { background-color: #134b47; color: white; }
+    .required-star { color: #d9534f; margin-left: 3px; }
+    .errorlist { list-style: none; padding: 0; margin: 0.3rem 0 0 0; color: #d9534f; font-size: 0.875rem; }
+    
+    /* Show/Hide Password Styles */
+    .password-wrapper { position: relative; }
+    .password-wrapper .form-control { padding-right: 50px; }
+    .toggle-password { position: absolute; top: 50%; right: 12px; transform: translateY(-50%); background: none; border: none; color: #6c757d; font-size: 0.85rem; font-weight: 600; cursor: pointer; padding: 4px 8px; border-radius: 4px; }
+    .toggle-password:hover { color: #1b5e5a; background-color: #f0f4f4; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-card">
+    <div class="card p-4 p-md-5">
+        <div class="text-center mb-5">
+            <h2 class="mb-2">{{ t.create_account }}</h2>
+        </div>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <!-- SECTION 1 -->
+            <div class="form-section">
+                <h5>1. {{ t.create_acc_btn }}</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="form-label">{{ t.username }} <span class="required-star">*</span></label>
+                            {{ form.username }}{{ form.username.errors }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="form-label">{{ t.email }} <span class="required-star">*</span></label>
+                            {{ form.email }}{{ form.email.errors }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="form-label">{{ t.first_name }}</label>
+                            {{ form.first_name }}{{ form.first_name.errors }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="form-label">{{ t.last_name }}</label>
+                            {{ form.last_name }}{{ form.last_name.errors }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2 -->
+            <div class="form-section">
+                <h5>2. {{ t.identity_type }}</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="form-label">{{ t.role }} <span class="required-star">*</span></label>
+                            {{ form.role }}{{ form.role.errors }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="form-label">{{ t.identity_type }} <span class="required-star">*</span></label>
+                            {{ form.identity_type }}{{ form.identity_type.errors }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="form-label">{{ t.identity_number }} <span class="required-star">*</span></label>
+                            {{ form.identity_number }}{{ form.identity_number.errors }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="form-label">{{ t.issuing_country }}</label>
+                            {{ form.issuing_country }}{{ form.issuing_country.errors }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="form-label">{{ t.phone }}</label>
+                            {{ form.phone }}{{ form.phone.errors }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3 -->
+            <div class="form-section">
+                <h5>3. {{ t.password }}</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="form-label">{{ t.password }} <span class="required-star">*</span></label>
+                            <div class="password-wrapper">
+                                {{ form.password1 }}
+                                <button type="button" class="toggle-password" onclick="togglePassword('id_password1', this)">Show</button>
+                            </div>
+                            {{ form.password1.errors }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="field-group">
+                            <label class="form-label">{{ t.confirm_password }} <span class="required-star">*</span></label>
+                            <div class="password-wrapper">
+                                {{ form.password2 }}
+                                <button type="button" class="toggle-password" onclick="togglePassword('id_password2', this)">Show</button>
+                            </div>
+                            {{ form.password2.errors }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-register">{{ t.create_account }}</button>
+            </div>
+
+            <p class="text-center mt-4 mb-0">
+                {{ t.already_acc }}
+                <a href="{% url 'login' %}?lang={{ current_lang }}" class="text-decoration-none fw-semibold">{{ t.login_here }}</a>
+            </p>
+        </form>
+    </div>
+</div>
+
+<!-- JAVASCRIPT FOR SHOW/HIDE PASSWORD -->
+<script>
+    function togglePassword(fieldId, btn) {
+        const field = document.getElementById(fieldId);
+        if (!field) return;
+        if (field.type === 'password') {
+            field.type = 'text';
+            btn.textContent = 'Hide';
+        } else {
+            field.type = 'password';
+            btn.textContent = 'Show';
+        }
+    }
+</script>
+{% endblock %}

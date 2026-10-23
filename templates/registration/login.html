@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}{{ t.login }}{% endblock %}
+{% block content %}
+<div class="row justify-content-center mt-5 mb-5">
+    <div class="col-md-5">
+        <div class="card p-4 shadow-sm border-0">
+            <h3 class="text-center mb-4" style="color: #1b5e5a; font-weight: 700;">{{ t.applicant_login }}</h3>
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                <!-- Username Field -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">{{ t.username }}</label>
+                    <input type="text" name="username" class="form-control" required>
+                </div>
+                
+                <!-- Password Field -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">{{ t.password }}</label>
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+                
+                <!-- Main Login Button -->
+                <button type="submit" class="btn w-100 text-white fw-bold mb-3" style="background-color: #1b5e5a;">{{ t.login }}</button>
+                
+                <!-- NEW: Clear "Forgot Password" Box underneath -->
+                <div class="text-center mb-3">
+                    <a href="{% url 'password_reset' %}" class="btn btn-outline-secondary w-100 shadow-sm" style="border-color: #1b5e5a; color: #1b5e5a; font-weight: 600;">
+                        <i class="fa-solid fa-key me-2"></i> Forgot Password?
+                    </a>
+                </div>
+                
+            </form>
+            
+            <!-- Register Link -->
+            <p class="text-center mt-2 mb-0 text-muted">
+                {{ t.already_acc }} <a href="{% url 'register' %}?lang={{ current_lang }}" class="text-decoration-none fw-bold" style="color: #1b5e5a;">{{ t.register }}</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
