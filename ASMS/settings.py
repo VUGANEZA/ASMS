@@ -5,7 +5,8 @@ Django settings for ASMS project.
 from pathlib import Path
 from django.utils.translation import gettext_lazy as _
 from django.conf.locale import LANG_INFO
-import dj_database_url # <--- ADDED FOR DEPLOYMENT
+import dj_database_url 
+import os # <--- ADDED FOR ENVIRONMENT VARIABLES
 
 # ─────────────────────────────────────────────
 # BASE
@@ -15,9 +16,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ─────────────────────────────────────────────
 # SECURITY
 # ─────────────────────────────────────────────
-SECRET_KEY = 'django-insecure-replace-this-with-a-secure-key-in-production'
-DEBUG = True # Keep as True for now so we can see errors during testing
-ALLOWED_HOSTS = ['*'] # Allowed for Render deployment
+# Use environment variable for SECRET_KEY if available, otherwise use the insecure one for local dev
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-replace-this-with-a-secure-key-in-production')
+
+# Turn off DEBUG for production
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+
+ALLOWED_HOSTS = ['*'] 
+
+# ── NEW: FIX FOR 403 CSRF ERROR ──
+# This tells Django to trust forms coming from your live Render URL
+CSRF_TRUSTED_ORIGINS = [
+    'https://asms-yute.onrender.com',
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+]
 
 # ─────────────────────────────────────────────
 # APPLICATIONS
@@ -37,7 +50,7 @@ INSTALLED_APPS = [
 # ─────────────────────────────────────────────
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', # <--- ADDED FOR STATIC FILES
+    'whitenoise.middleware.WhiteNoiseMiddleware', 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -73,7 +86,6 @@ WSGI_APPLICATION = 'ASMS.wsgi.application'
 # ─────────────────────────────────────────────
 # DATABASE
 # ─────────────────────────────────────────────
-# This dynamically uses Render's PostgreSQL if available, otherwise uses your local SQLite
 DATABASES = {
     'default': dj_database_url.config(
         default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
@@ -135,7 +147,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage' # <--- ADDED FOR RENDER
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -159,7 +171,8 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'vuganezaj5@gmail.com'
-EMAIL_HOST_PASSWORD = 'klsuatmgmfmlbncm'
+# Use environment variable for the password, or the hardcoded one for local testing
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'klsuatmgmfmlbncm')
 DEFAULT_FROM_EMAIL = 'ASMS REMA <vuganezaj5@gmail.com>'
 
 PASSWORD_RESET_TIMEOUT = 3600 
