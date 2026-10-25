@@ -6,7 +6,7 @@ from pathlib import Path
 from django.utils.translation import gettext_lazy as _
 from django.conf.locale import LANG_INFO
 import dj_database_url 
-import os # <--- ADDED FOR ENVIRONMENT VARIABLES
+import os 
 
 # ─────────────────────────────────────────────
 # BASE
@@ -16,16 +16,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ─────────────────────────────────────────────
 # SECURITY
 # ─────────────────────────────────────────────
-# Use environment variable for SECRET_KEY if available, otherwise use the insecure one for local dev
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-replace-this-with-a-secure-key-in-production')
-
-# Turn off DEBUG for production
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-
 ALLOWED_HOSTS = ['*'] 
 
 # ── NEW: FIX FOR 403 CSRF ERROR ──
-# This tells Django to trust forms coming from your live Render URL
 CSRF_TRUSTED_ORIGINS = [
     'https://asms-yute.onrender.com',
     'http://127.0.0.1:8000',
@@ -171,7 +166,6 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'vuganezaj5@gmail.com'
-# Use environment variable for the password, or the hardcoded one for local testing
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'klsuatmgmfmlbncm')
 DEFAULT_FROM_EMAIL = 'ASMS REMA <vuganezaj5@gmail.com>'
 
