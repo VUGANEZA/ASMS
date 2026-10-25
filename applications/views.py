@@ -352,10 +352,13 @@ def application_download_pdf(request, pk):
         ]))
         elements.append(mc_table)
 
-    # QR CODE
+    # QR CODE (Dynamic URL for Render & Localhost)
     if application.reference_number:
         elements.append(Spacer(1, 1.5*cm))
-        verify_url = f"http://127.0.0.1:8000/verify/{application.reference_number}/"
+        
+        # Get the domain dynamically
+        domain = request.build_absolute_uri('/')[:-1]
+        verify_url = f"{domain}/verify/{application.reference_number}/"
         
         qr = qrcode.QRCode(version=1, box_size=8, border=2)
         qr.add_data(verify_url)
